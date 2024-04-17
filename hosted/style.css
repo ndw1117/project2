@@ -1,3 +1,62 @@
+
+html, body {
+    background-color: rgb(12, 12, 12);
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.mainForm label {
+    color: white;
+    display: inline-block;
+    width: 100px;
+    margin-right: 10px;
+    text-align: right;
+    font-size: 1.2em;
+}
+
+.mainForm {
+    padding-top: 100px;
+    height: 180px;
+    width: 360px;
+    margin: 0 auto;
+    font-size: 1.2em;
+}
+
+#title {
+    color: white;
+    height: 125px;
+    width: 450px;
+    margin: 0 auto;
+    font-size: 5.5em;
+    text-align: center;
+    padding-top: 150px;
+}
+
+#loginSignupSwitch {
+    color: white;
+    text-align: center;
+}
+
+#loginSignupSwitch a, #loginSignupSwitch a:link, #loginSignupSwitch a:visited, #loginSignupSwitch a:hover, #loginSignupSwitch a:active {
+    color: #55acee;
+    text-decoration: underline;
+    transition: color 0.4s ease;
+}
+
+#loginSignupSwitch a:hover {
+    transition: color 0.8s ease;
+    color: lightblue;
+}
+
+
+
+
+
+ /* -------------------------------------------------------------------------------------------------------------------------------------- */
+
 html, body {
     height: 100%;
     width: 100%;
@@ -90,13 +149,13 @@ nav:nth-child(1) {
     background-color: #338acc;
 }
 
-.mainForm {
+/* .mainForm {
     height: 300px;
     width: 360px;
     margin: 0 auto;
     padding-top: 350px;
     font-size: 1.2em;
-}
+} */
 
 .mainForm h3 {
     text-align: center;

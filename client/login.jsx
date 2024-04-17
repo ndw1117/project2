@@ -1,6 +1,6 @@
 const helper = require('./helper.js');
 const React = require('react');
-const {createRoot} = require('react-dom/client');
+const { createRoot } = require('react-dom/client');
 
 const handleLogin = (e) => {
     e.preventDefault();
@@ -9,12 +9,12 @@ const handleLogin = (e) => {
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
 
-    if(!username || !pass) {
+    if (!username || !pass) {
         helper.handleError('Username or password is empty!');
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass});
+    helper.sendPost(e.target.action, { username, pass });
     return false;
 };
 
@@ -38,7 +38,7 @@ const handleSignup = (e) => {
     }
 
     // If no email was entered, it will later be gracefully received as an empty string
-    helper.sendPost(e.target.action, {username, email, pass, pass2});
+    helper.sendPost(e.target.action, { username, email, pass, pass2 });
 
     return false;
 }
@@ -46,19 +46,21 @@ const handleSignup = (e) => {
 // The React component for login (it's functional & stateless)
 const LoginWindow = (props) => {
     return (
-        <form id="loginForm"
-            name="loginForm"
-            onSubmit={handleLogin}
-            action="/login"
-            method="POST"
-            className="mainForm"
-        >
-            <label htmlFor="username">Username: </label>
-            <input id="user" type="text" name="username" placeholder="username" />
-            <label htmlFor="pass">Password: </label>
-            <input id="pass" type="password" name="pass" placeholder="password" />
-            <input className="formSubmit" type="submit" value="Sign in" />
-        </form>
+        <div id="loginWindow">
+            <form id="loginForm"
+                name="loginForm"
+                onSubmit={handleLogin}
+                action="/login"
+                method="POST"
+                className="mainForm"
+            >
+                <label htmlFor="username">Username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
+                <label htmlFor="pass">Password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
+                <input className="formSubmit" type="submit" value="Sign in" />
+            </form>
+        </div>
     );
 };
 
@@ -86,25 +88,38 @@ const SignupWindow = (props) => {
 };
 
 const init = () => {
-    const loginButton = document.getElementById('loginButton');
-    const signupButton = document.getElementById('signupButton');
+    const switchLabel = document.getElementById('switchLabel');
+    const switchButton = document.getElementById('switchButton');
 
     // Creates a React Root out of the content section
     const root = createRoot(document.getElementById('content'));
 
-    loginButton.addEventListener('click', (e) => {
+    switchButton.addEventListener('click', (e) => {
         e.preventDefault();
-        root.render( <LoginWindow /> );
+        if (switchButton.dataset.mode === 'signup') {
+            root.render(<SignupWindow />);
+
+            switchLabel.innerText = "Already have an account? ";
+
+            switchButton.innerText = 'Log in here';
+            switchButton.dataset.mode = 'login';
+            switchButton.href = '/login';
+
+            return false;
+        }
+
+        root.render(<LoginWindow />);
+
+        switchLabel.innerText = "Don't have an account? ";
+
+        switchButton.innerText = 'Sign up here';
+        switchButton.dataset.mode = 'signup';
+        switchButton.href = '/signup';
+
         return false;
     });
 
-    signupButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        root.render( <SignupWindow /> );
-        return false;
-    });
-
-    root.render( <LoginWindow /> );
+    root.render(<LoginWindow />);
 
 };
 
