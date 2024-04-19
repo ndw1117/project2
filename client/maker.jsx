@@ -78,7 +78,7 @@ const App = () => {
     const [reloadDomos, setReloadDomos] = useState(false);
 
     return (
-        <div>
+        <div id="editor">
             <div id="makeDomo">
                 <DomoForm triggerReload={() => setReloadDomos(!reloadDomos)} />
             </div>

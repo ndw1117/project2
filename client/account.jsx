@@ -23,6 +23,7 @@ const AccountWindow = (props) => {
             <h3>Your Info</h3>
             <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
+            <button>Change Password</button>
         </div>
     );
 };
