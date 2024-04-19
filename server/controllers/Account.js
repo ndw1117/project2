@@ -80,28 +80,27 @@ const changePassword = async (req, res) => {
   const newPass = `${req.body.pass}`;
   const newPass2 = `${req.body.pass2}`;
 
-  if (!username || !pass || !pass2) {
+  if (!username || !newPass || !newPass2) {
     return res.status(400).json({ error: 'Missing required fields!' });
   }
 
-  if (pass !== pass2) {
+  if (newPass !== newPass2) {
     return res.status(400).json({ error: 'Passwords do not match' });
   }
 
   try {
     const hash = await Account.generateHash(newPass);
     const updateResult = await Account.updateOne(
-      { username: username}, // Filter
-      { $set: { password: hash } } // Update
+      { username }, // Filter
+      { $set: { password: hash } }, // Update
     );
     console.log(updateResult);
-    return res.status(200).json({ message: 'Password Updated Succesfully'});
+    return res.status(200).json({ message: 'Password Updated Succesfully' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'An error occured!' });
   }
-
-}
+};
 
 module.exports = {
   getAccount,
