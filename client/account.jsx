@@ -3,6 +3,32 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
+const handlePassChange = async (e) => {
+    e.preventDefault();
+    helper.hideError();
+
+    const username = 'ndw';
+    const pass = e.target.querySelector('#pass').value;
+    const pass2 = e.target.querySelector('#pass2').value;
+
+
+    if (!username || !pass || !pass2) {
+        helper.handleError('Missing required fields!');
+        return false;
+    }
+
+    if (pass !== pass2) {
+        helper.handleError('Passwords do not match');
+        return false;
+    }
+
+
+    const response = await helper.sendPost(e.target.action, { username, pass, pass2 });
+
+    helper.handleSuccess(response.message);
+
+    return false;
+};
 
 // The React component for account information
 const AccountWindow = (props) => {
@@ -18,12 +44,31 @@ const AccountWindow = (props) => {
         loadAccountInfo();
     }, [props.reloadUser]);
 
+    const passButtonClicked = () => {
+        document.getElementById('passForm').classList.remove('hidden');
+        document.getElementById('passButton').classList.add('hidden');
+    };
+
     return (
-        <div className='mainForm centered'>
+        <div className='accountDiv centered'>
             <h3>Your Info</h3>
             <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
-            <button>Change Password</button>
+            <button id="passButton" onClick={passButtonClicked}>Change Password</button>
+            <form
+                id="passForm"
+                name="passForm"
+                onSubmit={handlePassChange}
+                action="/newPass"
+                method="POST"
+                className="hidden"
+            >
+                <label htmmlFor="pass">Password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
+                <label htmlFor="pass">Password: </label>
+                <input id="pass2" type="password" name="pass2" placeholder="retype password" />
+                <input className="formSubmit" type="submit" value="Submit" />
+            </form>
         </div>
     );
 };

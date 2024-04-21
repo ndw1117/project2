@@ -94,7 +94,6 @@ const changePassword = async (req, res) => {
       { username }, // Filter
       { $set: { password: hash } }, // Update
     );
-    console.log(updateResult);
     return res.status(200).json({ message: 'Password Updated Succesfully' });
   } catch (err) {
     console.log(err);
