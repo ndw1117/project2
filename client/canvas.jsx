@@ -176,8 +176,6 @@ class Effect {
         
             this.mouse.x = (event.clientX - rect.left) * scaleX; // X coordinate within the canvas
             this.mouse.y = (event.clientY - rect.top) * scaleY;  // Y coordinate within the canvas
-        
-            console.log(`Mouse coordinates relative to canvas: X=${this.mouse.x}, Y=${this.mouse.y}`);
         };
 
 

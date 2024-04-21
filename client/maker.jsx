@@ -15,7 +15,8 @@ const handleDomo = (e, onDomoAdded) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, age}, onDomoAdded);
+    // helper.sendPost(e.target.action, {name, age}, onDomoAdded);
+    helper.sendPost(e.target.action, {title: 'TestProject', ownerName: 'Nick'}, onDomoAdded);
     return false;
 };
 
