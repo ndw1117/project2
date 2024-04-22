@@ -1,4 +1,8 @@
 
+/*  The following code & structure was adapted from a personal project on particle systems, inspired by a tutorial 
+    from Franks Laboratory: https://www.youtube.com/c/Frankslaboratory
+*/
+
 // Setup
 
 const canvas = document.querySelector("#mainCanvas");

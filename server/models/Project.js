@@ -44,9 +44,9 @@ const ProjectSchema = new mongoose.Schema({
 });
 
 ProjectSchema.statics.toAPI = (doc) => ({
-    title: doc.title,
-    ownerName: doc.ownerName,
-  });
+  title: doc.title,
+  ownerName: doc.ownerName,
+});
 
 const ProjectModel = mongoose.model('Project', ProjectSchema);
 module.exports = ProjectModel;
