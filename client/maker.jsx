@@ -3,13 +3,16 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
-const handleProject = (e, onProjectAdded) => {
+
+// Handles the submission of a new project
+const handleProject = async (e, onProjectAdded) => {
     e.preventDefault();
     helper.hideError();
 
     const title = e.target.querySelector('#projectTitle').value;
 
-    // HARD-CODED USERNAME. STILL NEED TO GET CURRENT USERNAME
+    // HARD-CODED USERNAME! SWITCH THE LOGIC SO THE PROJECT CONTROLLER JUST ADDS USER INFO THE THE PROJECT DATA
+    // AFTER IT'S SUBMITTED USING REQ.SESSION (THE CONTROLLER WILL HAVE ACCESS TO THAT)
     const username = 'ndw';
 
     if (!title || !username) {
