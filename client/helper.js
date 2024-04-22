@@ -47,7 +47,7 @@ const sendPost = async (url, data, handler) => {
     handler(result);
   }
 
-    return result
+    return result;
 };
 
 const hideError = () => {

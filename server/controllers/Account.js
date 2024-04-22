@@ -90,7 +90,7 @@ const changePassword = async (req, res) => {
 
   try {
     const hash = await Account.generateHash(newPass);
-    const updateResult = await Account.updateOne(
+    await Account.updateOne(
       { username }, // Filter
       { $set: { password: hash } }, // Update
     );

@@ -7,6 +7,7 @@ const handlePassChange = async (e) => {
     e.preventDefault();
     helper.hideError();
 
+    // HARD-CODED USERNAME. STILL NEED TO GET CURRENT USERNAME
     const username = 'ndw';
     const pass = e.target.querySelector('#pass').value;
     const pass2 = e.target.querySelector('#pass2').value;

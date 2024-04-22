@@ -83,7 +83,7 @@ html, body {
     visibility: hidden;
 }
 
-.domoForm {
+.projectForm {
     border-bottom: 2px solid white;
     height: 35px;
     width: 650px;
@@ -94,6 +94,90 @@ html, body {
     /* border-top-right-radius: 4px; */
 }
 
+.projectForm label {
+    display: inline-block;
+    width: 75px;
+    margin-left: 10px;
+    font-size: 1.2em;
+    float: left;
+    color: white;
+}
+
+.projectForm input[type=text] {
+    float:left;
+}
+
+h3.projectTitle {
+    float:left;
+    width: 200px;
+    font-weight: bold;
+    padding-left: 65px;
+    font-size: 1.5em;
+}
+
+.submitProject {
+    transition: background-color 0.4s ease;
+    display: inline;
+    width: 100px;
+    background-color: #55acee;
+    border-radius: 3px;
+    color: white;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.submitProject:link, .submitProject:visited, .submitProject:hover, .submitProject:active {
+    color: white;
+}
+
+.submitProject:hover {
+    transition: background-color 0.4s ease;
+    background-color: #338acc;
+}
+
+#projects {
+    width: 650px;
+    min-width: 400px; 
+}
+
+.project {
+    width: 95%;
+    margin: 0 auto;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 2px solid #55acee;
+    border-radius: 4px;
+    background-color: #55acee;
+    padding: 10px;
+    min-height:60px;
+    overflow: hidden;
+}
+
+.project:hover {
+    transition: border-color 0.2s ease-out;
+    border-color: rgba(255,255,255, 0.8);
+    transition: background-color 2.6s ease-out;
+    background-color: #66bfff;
+}
+
+h3.projectTitle {
+    float:left;
+    width: 200px;
+    font-weight: bold;
+    padding-left: 65px;
+    font-size: 1.5em;
+}
+
+img.projectImage {
+    margin-left: 25px;
+    margin-right: 10px;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    margin-top:10px;
+    float:left;
+}
+
 #editor {
     border: 2px solid white;
     border-radius: 5px;
@@ -101,7 +185,13 @@ html, body {
     margin-top: 25px;
 }
 
-h3.emptyDomo {
+h3.emptyProject {
+    width: 400px;
+    font-size: 1.5em;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 18px;
+
     color: white;
     padding-bottom: 10px;
 }
