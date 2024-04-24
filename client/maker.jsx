@@ -10,17 +10,19 @@ const handleProject = async (e, onProjectAdded) => {
     helper.hideError();
 
     const title = e.target.querySelector('#projectTitle').value;
+    const link = e.target.querySelector('#projectLink').value;
 
-    // HARD-CODED USERNAME! SWITCH THE LOGIC SO THE PROJECT CONTROLLER JUST ADDS USER INFO THE THE PROJECT DATA
-    // AFTER IT'S SUBMITTED USING REQ.SESSION (THE CONTROLLER WILL HAVE ACCESS TO THAT)
-    const username = 'ndw';
-
-    if (!title || !username) {
-        helper.handleError('All fields are required');
+    if (!title) {
+        helper.handleError('Project title is required');
         return false;
     }
 
-    helper.sendPost(e.target.action, { title, ownerName: username }, onProjectAdded);
+    if (link) {
+        helper.sendPost(e.target.action, { title, link }, onProjectAdded);
+    }
+    else {
+        helper.sendPost(e.target.action, { title }, onProjectAdded);
+    }
 
     // Reset the text input box upon success
     e.target.querySelector('#projectTitle').value = '';
@@ -39,8 +41,8 @@ const ProjectForm = (props) => {
         >
             <label htmlFor="title">Title: </label>
             <input id="projectTitle" type="text" name="title" placeholder="Project Title" />
-            {/* <label htmlFor="age">Age: </label> */}
-            {/* <input id="domoAge" type="number" min="0" name="age" placeholder="Domo Age" /> */}
+            <label htmlFor="link">Link: </label>
+            <input id="projectLink" type="text" name="link" placeholder="Project Link" />
             <input className="submitProject" type="submit" value="Submit Project" />
         </form>
     );

@@ -17,15 +17,23 @@ const getProjects = async (req, res) => {
 const makerPage = async (req, res) => res.render('app');
 
 const makeProject = async (req, res) => {
-  if (!req.body.title || !req.body.ownerName) {
-    return res.status(400).json({ error: 'Both title and ownerName are required!' });
+  if (!req.body.title) {
+    return res.status(400).json({ error: 'Project title is required!' });
   }
 
   const projectData = {
     title: req.body.title,
-    ownerName: req.body.ownerName,
+    ownerName: req.session.account.username,
     owner: req.session.account._id,
   };
+  
+  if (req.session.account.email !== undefined) {
+    projectData.ownerEmail = req.session.account.email;
+  }
+
+  if (req.body.link !== undefined) {
+    projectData.link = req.body.link;
+  }
 
   try {
     const newProject = new Project(projectData);
