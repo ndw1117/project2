@@ -13,6 +13,8 @@ const handleProject = async (e, onProjectAdded) => {
     const link = e.target.querySelector('#projectLink').value;
     const description = e.target.querySelector('#projectDescription').value;
 
+    console.log(e.target.querySelector('#projectImage').files[0]);
+
     if (!title) {
         helper.handleError('Project title is required');
         return false;
@@ -48,11 +50,10 @@ const ProjectForm = (props) => {
             <input id="projectTitle" type="text" name="title" placeholder="Project Title" />
             <label htmlFor="link">Link: </label>
             <input id="projectLink" type="text" name="link" placeholder="Project Link" />
-            <span>
             <label htmlFor="description">Description: </label>
             <textarea id="projectDescription" name="description" placeholder="Project Description" />
-            </span>
-            
+            <label htmlFor="image">Image: </label>
+            <input id="projectImage" type="file" name="image" accept="image/*" />
             <input className="submitProject" type="submit" value="Submit Project" />
         </form>
     );

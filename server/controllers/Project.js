@@ -21,23 +21,15 @@ const makeProject = async (req, res) => {
     return res.status(400).json({ error: 'Project title is required!' });
   }
 
+  // Uses spread syntax to fill out the optional parts of the data, if provided
   const projectData = {
     title: req.body.title,
     ownerName: req.session.account.username,
     owner: req.session.account._id,
+    ...(req.session.account.email && { ownerEmail: req.session.account.email }),
+    ...(req.body.link && { link: req.body.link}),
+    ...(req.body.description && { description: req.body.description}),
   };
-  
-  if (req.session.account.email !== undefined) {
-    projectData.ownerEmail = req.session.account.email;
-  }
-
-  if (req.body.link !== undefined) {
-    projectData.link = req.body.link;
-  }
-
-  if (req.body.description !== undefined) {
-    projectData.description = req.body.description;
-  }
 
   try {
     const newProject = new Project(projectData);
