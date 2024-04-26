@@ -76,11 +76,11 @@ const signup = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const username = `${req.body.username}`;
+  const username = req.session.account.username;
   const newPass = `${req.body.pass}`;
   const newPass2 = `${req.body.pass2}`;
 
-  if (!username || !newPass || !newPass2) {
+  if (!newPass || !newPass2) {
     return res.status(400).json({ error: 'Missing required fields!' });
   }
 

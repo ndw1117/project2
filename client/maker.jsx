@@ -11,21 +11,26 @@ const handleProject = async (e, onProjectAdded) => {
 
     const title = e.target.querySelector('#projectTitle').value;
     const link = e.target.querySelector('#projectLink').value;
+    const description = e.target.querySelector('#projectDescription').value;
 
     if (!title) {
         helper.handleError('Project title is required');
         return false;
     }
 
-    if (link) {
-        helper.sendPost(e.target.action, { title, link }, onProjectAdded);
-    }
-    else {
-        helper.sendPost(e.target.action, { title }, onProjectAdded);
-    }
+    // Uses spread syntax to conditionally add the values to the data being sent if they exist
+    const projectData = {
+        title,
+        ...(link && { link }),
+        ...(description && { description })
+    };
 
-    // Reset the text input box upon success
+    helper.sendPost(e.target.action, projectData, onProjectAdded);
+
+    // Reset the text input boxes upon success
     e.target.querySelector('#projectTitle').value = '';
+    e.target.querySelector('#projectLink').value = '';
+    e.target.querySelector('#projectDescription').value = '';
 
     return false;
 };
@@ -43,6 +48,11 @@ const ProjectForm = (props) => {
             <input id="projectTitle" type="text" name="title" placeholder="Project Title" />
             <label htmlFor="link">Link: </label>
             <input id="projectLink" type="text" name="link" placeholder="Project Link" />
+            <span>
+            <label htmlFor="description">Description: </label>
+            <textarea id="projectDescription" name="description" placeholder="Project Description" />
+            </span>
+            
             <input className="submitProject" type="submit" value="Submit Project" />
         </form>
     );

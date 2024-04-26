@@ -7,13 +7,11 @@ const handlePassChange = async (e) => {
     e.preventDefault();
     helper.hideError();
 
-    // HARD-CODED USERNAME. STILL NEED TO GET CURRENT USERNAME
-    const username = 'ndw';
     const pass = e.target.querySelector('#pass').value;
     const pass2 = e.target.querySelector('#pass2').value;
 
 
-    if (!username || !pass || !pass2) {
+    if (!pass || !pass2) {
         helper.handleError('Missing required fields!');
         return false;
     }
@@ -24,7 +22,7 @@ const handlePassChange = async (e) => {
     }
 
 
-    const response = await helper.sendPost(e.target.action, { username, pass, pass2 });
+    const response = await helper.sendPost(e.target.action, { pass, pass2 });
 
     helper.handleSuccess(response.message);
 

@@ -35,6 +35,10 @@ const makeProject = async (req, res) => {
     projectData.link = req.body.link;
   }
 
+  if (req.body.description !== undefined) {
+    projectData.description = req.body.description;
+  }
+
   try {
     const newProject = new Project(projectData);
     await newProject.save();

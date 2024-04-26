@@ -85,7 +85,7 @@ html, body {
 
 .projectForm {
     border-bottom: 2px solid white;
-    height: 35px;
+    height: 25%;
     width: 650px;
     margin-top: 15px;
     padding-bottom: 10px;
@@ -96,15 +96,28 @@ html, body {
 
 .projectForm label {
     display: inline-block;
-    width: 75px;
-    margin-left: 10px;
+    /* width: 75px; */
+    margin-left: 40px;
+    margin-right: 20px;
     font-size: 1.2em;
-    float: left;
+    /* float: left; */
     color: white;
 }
 
 .projectForm input[type=text] {
-    float:left;
+    /* float:left; */
+}
+
+.projectForm #projectDescription {
+    width: 40%;
+    height: 90px;
+    resize: none;
+    transform: translateY(30px);
+}
+
+.projectForm #projectDescription::placeholder {
+    text-align: center;
+    line-height: 80px;
 }
 
 .submitProject {
@@ -130,6 +143,8 @@ html, body {
 #projects {
     width: 650px;
     min-width: 400px; 
+    max-height: 50vh;
+    overflow-y: auto;
 }
 
 .project {
