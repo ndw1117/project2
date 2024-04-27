@@ -10,24 +10,27 @@ const handleProject = async (e, onProjectAdded) => {
     helper.hideError();
 
     const title = e.target.querySelector('#projectTitle').value;
-    const link = e.target.querySelector('#projectLink').value;
-    const description = e.target.querySelector('#projectDescription').value;
-
-    console.log(e.target.querySelector('#projectImage').files[0]);
+    // const link = e.target.querySelector('#projectLink').value;
+    // const description = e.target.querySelector('#projectDescription').value;
 
     if (!title) {
         helper.handleError('Project title is required');
         return false;
     }
 
-    // Uses spread syntax to conditionally add the values to the data being sent if they exist
-    const projectData = {
-        title,
-        ...(link && { link }),
-        ...(description && { description })
-    };
+    // // Uses spread syntax to conditionally add the values to the data being sent if they exist
+    // const projectData = {
+    //     title,
+    //     ...(link && { link }),
+    //     ...(description && { description })
+    // };
 
-    helper.sendPost(e.target.action, projectData, onProjectAdded);
+    const projectData = new FormData(e.target);
+    // for (let [name, value] of projectData.entries()) {
+    //     console.log(`${name}: ${value}`);
+    // }
+
+    helper.sendFormData(e.target.action, projectData, onProjectAdded);
 
     // Reset the text input boxes upon success
     e.target.querySelector('#projectTitle').value = '';
@@ -41,10 +44,11 @@ const ProjectForm = (props) => {
     return (
         <form id="projectForm"
             onSubmit={(e) => handleProject(e, props.triggerReload)}
-            name="prjectForm"
+            name="projectForm"
             action="/maker"
             method="POST"
             className="projectForm"
+        // encType="multipart/form-data"
         >
             <label htmlFor="title">Title: </label>
             <input id="projectTitle" type="text" name="title" placeholder="Project Title" />
@@ -80,12 +84,12 @@ const ProjectList = (props) => {
     }
 
     const projectNodes = projects.map(project => {
+
         return (
             <div key={project.id} className="project">
-                {/* Will need to change image from favicon to the project's image */}
-                <img src="/assets/img/favicon.svg" alt="project image" className="projectImage" />
+                {/* Embeds the buffer data from project.image in an img tag for display*/}
+                <img src={`data:image/*;base64,${project.image}`} alt="project image" className="projectImage" />
                 <h3 className="projectTitle">Title: {project.title}</h3>
-                {/* <h3 className="domoAge">Age: {project.age}</h3> */}
             </div>
         );
     });

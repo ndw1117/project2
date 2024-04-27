@@ -1,6 +1,9 @@
 const controllers = require('./controllers');
 const mid = require('./middleware');
 
+const multer = require("multer");
+const upload = multer();
+
 const router = (app) => {
   // app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
   app.get('/getProjects', mid.requiresLogin, controllers.Project.getProjects);
@@ -20,7 +23,7 @@ const router = (app) => {
   // Change to Project.makerPage and confirm it works
   app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
   // app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
-  app.post('/maker', mid.requiresLogin, controllers.Project.makeProject);
+  app.post('/maker', mid.requiresLogin, upload.single('image'), controllers.Project.makeProject);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

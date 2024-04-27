@@ -5,7 +5,7 @@ const { Project } = models;
 const getProjects = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Project.find(query).select('title ownerName').lean().exec();
+    const docs = await Project.find(query).select('title image ownerName ownerEmail description link').lean().exec();
 
     return res.json({ projects: docs });
   } catch (err) {
@@ -17,6 +17,13 @@ const getProjects = async (req, res) => {
 const makerPage = async (req, res) => res.render('app');
 
 const makeProject = async (req, res) => {
+
+  let imageBuffer;
+
+  if (req.file) {
+    imageBuffer = req.file.buffer;
+  }
+
   if (!req.body.title) {
     return res.status(400).json({ error: 'Project title is required!' });
   }
@@ -29,6 +36,7 @@ const makeProject = async (req, res) => {
     ...(req.session.account.email && { ownerEmail: req.session.account.email }),
     ...(req.body.link && { link: req.body.link}),
     ...(req.body.description && { description: req.body.description}),
+    ...(imageBuffer && { image: imageBuffer}),
   };
 
   try {
