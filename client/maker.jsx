@@ -10,32 +10,28 @@ const handleProject = async (e, onProjectAdded) => {
     helper.hideError();
 
     const title = e.target.querySelector('#projectTitle').value;
-    // const link = e.target.querySelector('#projectLink').value;
-    // const description = e.target.querySelector('#projectDescription').value;
+    const description = e.target.querySelector('#projectDescription').value;
+    const file = document.getElementById('projectImage').files[0];
 
-    if (!title) {
-        helper.handleError('Project title is required');
+    if (!title || !description || !file) {
+        helper.handleError('Project title, description, and image are required');
         return false;
     }
 
-    // // Uses spread syntax to conditionally add the values to the data being sent if they exist
-    // const projectData = {
-    //     title,
-    //     ...(link && { link }),
-    //     ...(description && { description })
-    // };
+    const imageType = document.getElementById('projectImage').files[0].type;
+
+    if (!imageType.startsWith('image/')) {
+        helper.handleError('Unsupported image file type');
+        return false;
+    }
 
     const projectData = new FormData(e.target);
-    // for (let [name, value] of projectData.entries()) {
-    //     console.log(`${name}: ${value}`);
-    // }
+    projectData.append('imageType', imageType);
 
     helper.sendFormData(e.target.action, projectData, onProjectAdded);
 
-    // Reset the text input boxes upon success
-    e.target.querySelector('#projectTitle').value = '';
-    e.target.querySelector('#projectLink').value = '';
-    e.target.querySelector('#projectDescription').value = '';
+    // Reset the form inputs upon success
+    e.target.reset();
 
     return false;
 };
@@ -52,7 +48,7 @@ const ProjectForm = (props) => {
         >
             <label htmlFor="title">Title: </label>
             <input id="projectTitle" type="text" name="title" placeholder="Project Title" />
-            <label htmlFor="link">Link: </label>
+            <label htmlFor="link">Link  (optional) : </label>
             <input id="projectLink" type="text" name="link" placeholder="Project Link" />
             <label htmlFor="description">Description: </label>
             <textarea id="projectDescription" name="description" placeholder="Project Description" />
@@ -84,12 +80,11 @@ const ProjectList = (props) => {
     }
 
     const projectNodes = projects.map(project => {
-
         return (
             <div key={project.id} className="project">
                 {/* Embeds the buffer data from project.image in an img tag for display*/}
-                <img src={`data:image/*;base64,${project.image}`} alt="project image" className="projectImage" />
-                <h3 className="projectTitle">Title: {project.title}</h3>
+                <img src={`data:${project.imageType};base64,${project.image}`} alt="project image" className="projectImage" />
+                <h3 className="projectTitle">{project.title}</h3>
             </div>
         );
     });

@@ -1,7 +1,7 @@
+const multer = require('multer');
 const controllers = require('./controllers');
 const mid = require('./middleware');
 
-const multer = require("multer");
 const upload = multer();
 
 const router = (app) => {

@@ -151,6 +151,68 @@ class Particle {
     }
 }
 
+// Special particles that contain content and have additional behavior
+class ContentParticle extends Particle {
+    constructor(effect, coordinates, imageSrc) {
+        // Call the constructor of the parent class (Particle) using super()
+        super(effect);
+
+        // Add or override properties specific to special particles
+
+        this.radius = 35; // Set a larger radius for special particles
+        this.x = coordinates.x;
+        this.y = coordinates.y;
+        this.anchorX = this.x;
+        this.anchorY = this.y;
+
+        this.img = new Image();
+        this.img.src = imageSrc;
+        
+    }
+
+    draw(context) {
+        // First, draw particle using super class's draw() method
+        super.draw(context);
+
+        // Draw the content image on the particle
+        this.drawImage(context);
+    }
+
+    drawImage(context) {
+
+        // Draw the content image
+        // const img = new Image();
+        // img.src = this.imgPath;
+        const imgWidth = (this.radius * 0.85) * 2;
+        const imgHeight = (this.radius * 0.85) * 2;
+        const imgX = this.x - (imgWidth / 2);
+        const imgY = this.y - (imgHeight / 2);
+        const cornerRadius = imgWidth / 2;
+
+        context.save();
+        context.beginPath();
+        context.moveTo(imgX + cornerRadius, imgY);
+        context.arcTo(imgX + imgWidth, imgY, imgX + imgWidth, imgY + imgHeight, cornerRadius);
+        context.arcTo(imgX + imgWidth, imgY + imgHeight, imgX, imgY + imgHeight, cornerRadius);
+        context.arcTo(imgX, imgY + imgHeight, imgX, imgY, cornerRadius);
+        context.arcTo(imgX, imgY, imgX + imgWidth, imgY, cornerRadius);
+        context.closePath();
+        context.clip();
+        
+
+        context.drawImage(this.img, imgX, imgY, imgWidth, imgHeight);
+        context.restore();
+    }
+
+    reset(index) {
+        this.x = this.effect.contentParticleCoordinates[index].x;
+        this.y = this.effect.contentParticleCoordinates[index].y;
+
+        this.anchorX = this.x;
+        this.anchorY = this.y;
+    }
+}
+
 // The "brain" of the code. Manages all particles
 class Effect {
     constructor(canvas, context) {
@@ -160,7 +222,10 @@ class Effect {
         this.height = this.canvas.height;
         this.particles = [];
         this.numberOfParticles = 60;
-        this.createParticles();
+        this.numberOfContentParticles = 4;
+        this.contentParticleCoordinates = this.calcContentCoordinates();
+
+        this.projects;
 
         this.mouse = {
             x: -100,
@@ -187,11 +252,32 @@ class Effect {
             this.resize(this.canvas.clientWidth, this.canvas.clientHeight);
         }
 
+        // We are calling the function but not awaiting it here
+        this.init();
+
     }
+
+    async init() {
+        this.projects = await this.loadProjectsFromServer();
+        this.createParticles();
+    }
+
+    loadProjectsFromServer = async () => {
+        const response = await fetch('/getProjects');
+        const data = await response.json();
+        return data.projects;
+    };
 
     createParticles() {
         for (let i = 0; i < this.numberOfParticles; i++) {
-            this.particles.push(new Particle(this));
+            if (i % (this.numberOfParticles / this.numberOfContentParticles) === 0) {
+                this.particles.push(new ContentParticle(this,this.contentParticleCoordinates[i / (this.numberOfParticles / this.numberOfContentParticles)],
+                `data:${this.projects[i / (this.numberOfParticles / this.numberOfContentParticles)].imageType};base64,${this.projects[i / (this.numberOfParticles / this.numberOfContentParticles)].image}`
+            ));
+            }
+            else {
+                this.particles.push(new Particle(this));
+            }
         }
     }
 
@@ -239,9 +325,27 @@ class Effect {
         this.context.fillStyle = gradient;
         this.context.strokeStyle = "white";
 
+        this.contentParticleCoordinates = this.calcContentCoordinates();
+
+        let index = 0;
         this.particles.forEach(particle => {
-            particle.reset();
-        })
+            if (particle instanceof ContentParticle) {
+                particle.reset(index);
+                index++;
+            }
+            else {
+                particle.reset();
+            }
+        });
+    }
+
+    calcContentCoordinates() {
+        return [
+            {x: Math.floor(this.width * .13), y: Math.floor(this.height * .14)},   // About 200, 100
+            {x: Math.floor(this.width * .14), y: Math.floor(this.height * .77)},   // About 220, 550
+            {x: Math.floor(this.width * .846), y: Math.floor(this.height * .21)},  // About 1300, 150
+            {x: Math.floor(this.width * .88), y: Math.floor(this.height * .70)}    // About 1350, 500
+        ]
     }
 }
 

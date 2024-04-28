@@ -76,7 +76,7 @@ const signup = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const username = req.session.account.username;
+  const { username } = req.session.account;
   const newPass = `${req.body.pass}`;
   const newPass2 = `${req.body.pass2}`;
 

@@ -12,7 +12,11 @@ const ProjectSchema = new mongoose.Schema({
   },
   image: {
     type: Buffer,
-    required: false,
+    required: true,
+  },
+  imageType: {
+    type: String,
+    required: true,
   },
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -30,7 +34,7 @@ const ProjectSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
   },
   link: {

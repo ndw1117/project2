@@ -5,7 +5,7 @@ const { Project } = models;
 const getProjects = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Project.find(query).select('title image ownerName ownerEmail description link').lean().exec();
+    const docs = await Project.find(query).select('title image imageType ownerName ownerEmail description link').lean().exec();
 
     return res.json({ projects: docs });
   } catch (err) {
@@ -17,7 +17,6 @@ const getProjects = async (req, res) => {
 const makerPage = async (req, res) => res.render('app');
 
 const makeProject = async (req, res) => {
-
   let imageBuffer;
 
   if (req.file) {
@@ -34,9 +33,10 @@ const makeProject = async (req, res) => {
     ownerName: req.session.account.username,
     owner: req.session.account._id,
     ...(req.session.account.email && { ownerEmail: req.session.account.email }),
-    ...(req.body.link && { link: req.body.link}),
-    ...(req.body.description && { description: req.body.description}),
-    ...(imageBuffer && { image: imageBuffer}),
+    ...(req.body.link && { link: req.body.link }),
+    description: req.body.description,
+    image: imageBuffer,
+    imageType: req.body.imageType,
   };
 
   try {
