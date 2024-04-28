@@ -33,7 +33,7 @@ class Particle {
         else {
             this.y = this.radius + Math.random() * (this.effect.height - this.radius * 2);
         }
-    
+
         this.vx = (Math.random() - 0.5) * 0.16; // Value between -0.08 and 0.08
         this.vy = (Math.random() - 0.5) * 0.16;
 
@@ -71,7 +71,7 @@ class Particle {
             this.pushX = 0;
             this.pushY = 0;
         }
-        
+
 
         // Makes sure particles stay in their movement radius
 
@@ -153,21 +153,24 @@ class Particle {
 
 // Special particles that contain content and have additional behavior
 class ContentParticle extends Particle {
-    constructor(effect, coordinates, imageSrc) {
+    constructor(effect, coordinates, project) {
         // Call the constructor of the parent class (Particle) using super()
         super(effect);
 
         // Add or override properties specific to special particles
 
-        this.radius = 35; // Set a larger radius for special particles
+        this.radius = 40; // Set a larger radius for special particles
         this.x = coordinates.x;
         this.y = coordinates.y;
         this.anchorX = this.x;
         this.anchorY = this.y;
 
+        // The data for the corresponding project
+        this.project = project;
+
         this.img = new Image();
-        this.img.src = imageSrc;
-        
+        this.img.src = `data:${this.project.imageType};base64,${this.project.image}`;
+
     }
 
     draw(context) {
@@ -198,7 +201,7 @@ class ContentParticle extends Particle {
         context.arcTo(imgX, imgY, imgX + imgWidth, imgY, cornerRadius);
         context.closePath();
         context.clip();
-        
+
 
         context.drawImage(this.img, imgX, imgY, imgWidth, imgHeight);
         context.restore();
@@ -221,11 +224,18 @@ class Effect {
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         this.particles = [];
-        this.numberOfParticles = 60;
-        this.numberOfContentParticles = 4;
+        this.numberOfParticles = 64;    // Must be divisible by maxContentParticles
+        this.maxContentParticles = 8;   // Must be a factor or numberOfParticles
         this.contentParticleCoordinates = this.calcContentCoordinates();
 
+        canvas.onclick = e => { this.showContent(e) };
+
         this.projects;
+
+        // The following will be utilized in certain functions to reference canvas coordinates instead of screen coordinates
+        // this.rect = canvas.getBoundingClientRect(); // Gets the bounds of the canvas
+        // this.scaleX = canvas.width / this.rect.width;    // Relationship bitmap vs element for X
+        // this.scaleY = canvas.height / this.rect.height;  // Relationship bitmap vs element for Y
 
         this.mouse = {
             x: -100,
@@ -240,9 +250,9 @@ class Effect {
 
         canvas.onmousemove = (event) => {
             const rect = canvas.getBoundingClientRect(); // Gets the bounds of the canvas
-            const scaleX = canvas.width / rect.width;    // Relationship bitmap vs. element for X
-            const scaleY = canvas.height / rect.height;  // Relationship bitmap vs. element for Y
-        
+            const scaleX = canvas.width / rect.width;    // Relationship bitmap vs element for X
+            const scaleY = canvas.height / rect.height;  // Relationship bitmap vs element for Y
+
             this.mouse.x = (event.clientX - rect.left) * scaleX; // X coordinate within the canvas
             this.mouse.y = (event.clientY - rect.top) * scaleY;  // Y coordinate within the canvas
         };
@@ -263,17 +273,19 @@ class Effect {
     }
 
     loadProjectsFromServer = async () => {
-        const response = await fetch('/getProjects');
+        const response = await fetch(`/getRandomProjects?num=${this.maxContentParticles}`);
         const data = await response.json();
         return data.projects;
     };
 
     createParticles() {
         for (let i = 0; i < this.numberOfParticles; i++) {
-            if (i % (this.numberOfParticles / this.numberOfContentParticles) === 0) {
-                this.particles.push(new ContentParticle(this,this.contentParticleCoordinates[i / (this.numberOfParticles / this.numberOfContentParticles)],
-                `data:${this.projects[i / (this.numberOfParticles / this.numberOfContentParticles)].imageType};base64,${this.projects[i / (this.numberOfParticles / this.numberOfContentParticles)].image}`
-            ));
+            if (i % (this.numberOfParticles / this.maxContentParticles) === 0) {
+                let contentIndex = i / (this.numberOfParticles / this.maxContentParticles);
+                // Only add the content particle if we have a project to assign it
+                if (this.projects[contentIndex]) {
+                    this.particles.push(new ContentParticle(this, this.contentParticleCoordinates[contentIndex], this.projects[contentIndex]));
+                }
             }
             else {
                 this.particles.push(new Particle(this));
@@ -298,16 +310,16 @@ class Effect {
                 const dy = this.particles[a].y - this.particles[b].y;
                 const distance = Math.hypot(dx, dy);
 
-                if (distance < maxDistance){
+                if (distance < maxDistance) {
                     context.save();
-                    const opacity = 1 - (distance/maxDistance);
+                    const opacity = 1 - (distance / maxDistance);
                     context.globalAlpha = opacity;
                     context.beginPath();
                     context.moveTo(this.particles[a].x, this.particles[a].y);
                     context.lineTo(this.particles[b].x, this.particles[b].y);
                     context.stroke();
                     context.restore();
-                } 
+                }
             }
         }
     }
@@ -341,11 +353,75 @@ class Effect {
 
     calcContentCoordinates() {
         return [
-            {x: Math.floor(this.width * .13), y: Math.floor(this.height * .14)},   // About 200, 100
-            {x: Math.floor(this.width * .14), y: Math.floor(this.height * .77)},   // About 220, 550
-            {x: Math.floor(this.width * .846), y: Math.floor(this.height * .21)},  // About 1300, 150
-            {x: Math.floor(this.width * .88), y: Math.floor(this.height * .70)}    // About 1350, 500
+            { x: Math.floor(this.width * .40), y: Math.floor(this.height * .65) }, // Position 4
+            { x: Math.floor(this.width * .60), y: Math.floor(this.height * .35) }, // Position 5
+
+            { x: Math.floor(this.width * .13), y: Math.floor(this.height * .14) }, //Position 1  (About 200, 100)
+            { x: Math.floor(this.width * .88), y: Math.floor(this.height * .70) },  // Position 8  (About 1350, 500)
+
+            { x: Math.floor(this.width * .14), y: Math.floor(this.height * .77) }, // Position 2  (About 220, 550)
+            { x: Math.floor(this.width * .846), y: Math.floor(this.height * .21) },// Position 7  (About 1300, 150)
+
+            { x: Math.floor(this.width * .30), y: Math.floor(this.height * .40) }, // Position 3
+            { x: Math.floor(this.width * .65), y: Math.floor(this.height * .77) } // Position 6
         ]
+    }
+
+    showContent(event) {
+
+        const rect = canvas.getBoundingClientRect(); // Gets the bounds of the canvas
+        const scaleX = canvas.width / rect.width;    // Relationship bitmap vs element for X
+        const scaleY = canvas.height / rect.height;  // Relationship bitmap vs element for Y
+
+        const mouseX = (event.clientX - rect.left) * scaleX; // X coordinate within the canvas
+        const mouseY = (event.clientY - rect.top) * scaleY;  // Y coordinate within the canvas
+
+        const focusParticle = document.querySelector("#focusParticle");
+
+        if (focusParticle.style.display === "flex") {
+            focusParticle.style.display = "none";
+            return;
+        }
+
+        this.particles.forEach(particle => {
+            if (particle instanceof ContentParticle) {
+                const distance = Math.sqrt(Math.pow(mouseX - particle.x, 2) + Math.pow(mouseY - particle.y, 2));
+                if (distance <= particle.radius) {
+                    // This means a content particle was clicked, so the focused content particle should be shown
+                    focusParticle.style.display = "flex";
+                    this.setProjectInfo(particle.project);
+                    return;
+                }
+            }
+        });
+    }
+
+    setProjectInfo(project) {
+        const focusParticle = document.querySelector("#focusParticle");
+
+        focusParticle.querySelector("#focusTitle").innerHTML = project.title;
+        focusParticle.querySelector("img").src = `data:${project.imageType};base64,${project.image}`;
+        focusParticle.querySelector("#focusDescription").innerHTML = project.description;
+        
+        if (project.link) {
+            const link = focusParticle.querySelector("a");
+            link.href = project.link;
+            link.style.visibility = 'visible';
+        }
+        else {
+            focusParticle.querySelector("a").visibility = 'hidden';
+        }
+
+        focusParticle.querySelector("#creator").innerHTML = `<b>Creator: <b>${project.ownerName}`;
+
+        if (project.ownerEmail) {
+            const contact = focusParticle.querySelector("#contact");
+            contact.innerHTML = `<b>Contact: <b>${project.ownerEmail}`;
+            contact.style.visibility = 'visible';
+        }
+        else {
+            focusParticle.querySelector("#contact").visibility = 'hidden';
+        }
     }
 }
 

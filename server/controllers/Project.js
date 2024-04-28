@@ -1,4 +1,5 @@
 const models = require('../models');
+const { ObjectId } = require('mongodb');
 
 const { Project } = models;
 
@@ -8,6 +9,64 @@ const getProjects = async (req, res) => {
     const docs = await Project.find(query).select('title image imageType ownerName ownerEmail description link').lean().exec();
 
     return res.json({ projects: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error retrieving projects!' });
+  }
+};
+
+const getRandomProjects = async (req, res) => {
+  try {
+
+    // Convert the string ID to an ObjectID. Needed for propery query comparison
+    const accountId = ObjectId.createFromHexString(req.session.account._id);
+
+    // $ne is the MongoDB operator for "not equal"
+    const query = { owner: { $ne: accountId } };
+
+    const num = parseInt(req.query.num);
+
+    if (num) {
+      const docs = await Project.aggregate([
+        { $match: query },
+        { $sample: { size: num } },
+        {
+          $project: {
+            title: 1,
+            image: 1,
+            imageType: 1,
+            ownerName: 1,
+            ownerEmail: 1,
+            description: 1,
+            link: 1
+          }
+        }
+      ]);
+
+      return res.json({ projects: docs });
+    }
+
+    // Else a num wasn't given
+    let docs = await Project.aggregate([
+      { $match: query },
+      {
+        $project: {
+          title: 1,
+          image: 1,
+          imageType: 1,
+          ownerName: 1,
+          ownerEmail: 1,
+          description: 1,
+          link: 1
+        }
+      },
+      { $addFields: { randomOrder: { $rand: {} } } }, // Add a random field to each document
+      { $sort: { randomOrder: 1 } }, // Sort the documents by the random field
+      { $project: { randomOrder: 0 } } // Exclude the randomOrder field from the final output
+    ]);
+
+    return res.json({ projects: docs });
+
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error retrieving projects!' });
@@ -56,4 +115,5 @@ module.exports = {
   makerPage,
   makeProject,
   getProjects,
+  getRandomProjects,
 };
