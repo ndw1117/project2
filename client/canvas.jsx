@@ -47,12 +47,9 @@ class Particle {
     }
 
     draw(context) {
-        // context.fillStyle = `hsl(${this.x * 0.28}, 100%, 50%)`;
         context.beginPath();
         context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         context.fill();
-        // Can include stroke if visually desired, but strokes on circles are more computationally intensive
-        //context.stroke();
     }
 
     update() {
@@ -174,8 +171,17 @@ class ContentParticle extends Particle {
     }
 
     draw(context) {
+
+        ctx.save();
+
+        if (this.project.premium) {
+            ctx.fillStyle = 'gold';
+        }
+
         // First, draw particle using super class's draw() method
         super.draw(context);
+
+        ctx.restore();
 
         // Draw the content image on the particle
         this.drawImage(context);
@@ -398,6 +404,13 @@ class Effect {
 
     setProjectInfo(project) {
         const focusParticle = document.querySelector("#focusParticle");
+
+        if (project.premium) {
+            focusParticle.style.backgroundImage = 'radial-gradient(white 30%, gold 90%, rgb(255, 221, 0) 100%)';
+        }
+        else {
+            focusParticle.style.backgroundImage = 'radial-gradient(white 30%, lightskyblue 90%, deepskyblue 100%)';
+        }
 
         focusParticle.querySelector("#focusTitle").innerHTML = project.title;
         focusParticle.querySelector("img").src = `data:${project.imageType};base64,${project.image}`;

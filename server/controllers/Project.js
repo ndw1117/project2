@@ -6,7 +6,7 @@ const { Project } = models;
 const getProjects = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Project.find(query).select('title image imageType ownerName ownerEmail description link').lean().exec();
+    const docs = await Project.find(query).select('title image imageType ownerName ownerEmail description link premium').lean().exec();
 
     return res.json({ projects: docs });
   } catch (err) {
@@ -38,6 +38,7 @@ const getRandomProjects = async (req, res) => {
             ownerEmail: 1,
             description: 1,
             link: 1,
+            premium: 1,
           },
         },
       ]);
@@ -57,6 +58,7 @@ const getRandomProjects = async (req, res) => {
           ownerEmail: 1,
           description: 1,
           link: 1,
+          premium: 1,
         },
       },
       { $addFields: { randomOrder: { $rand: {} } } }, // Add a random field to each document
@@ -80,8 +82,8 @@ const makeProject = async (req, res) => {
     imageBuffer = req.file.buffer;
   }
 
-  if (!req.body.title) {
-    return res.status(400).json({ error: 'Project title is required!' });
+  if (!req.body.title || !req.body.description) {
+    return res.status(400).json({ error: 'Project title and description is required!' });
   }
 
   // Uses spread syntax to fill out the optional parts of the data, if provided
@@ -94,6 +96,7 @@ const makeProject = async (req, res) => {
     description: req.body.description,
     image: imageBuffer,
     imageType: req.body.imageType,
+    premium: req.session.account.premium,
   };
 
   try {

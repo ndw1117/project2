@@ -41,6 +41,10 @@ const ProjectSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  premium: {
+    type: Boolean,
+    default: false,
+  },
   createdDate: {
     type: Date,
     default: Date.now,

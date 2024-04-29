@@ -37,7 +37,6 @@ const AccountWindow = (props) => {
         const loadAccountInfo = async () => {
             const response = await fetch('/getAccount');
             const data = await response.json();
-            console.log(data);
             setUser(data.user);
         };
         loadAccountInfo();
@@ -48,11 +47,32 @@ const AccountWindow = (props) => {
         document.getElementById('passButton').classList.add('hidden');
     };
 
+    const togglePremium = async () => {
+        helper.hideError();
+    
+        const response = await helper.sendPost('/setPremium');
+    
+        helper.handleSuccess(response.message);
+    
+        user.premium = !user.premium;
+
+        let toggleSwitch = document.getElementById('toggleSwitch');
+        toggleSwitch.checked = user.premium;
+    }
+
     return (
         <div className='accountDiv centered'>
             <h3>Your Info</h3>
             <p>Username: {user.username}</p>
             <p>Email: {user.email}</p>
+            {/* The code for the following switch was influenced by a toggle switch tutorial from W3Schools */}
+            <div id="premiumDiv">
+                <p>Premium Mode: </p>
+                <label class="switch">
+                    <input type="checkbox" id="toggleSwitch" checked={user.premium} onChange={togglePremium}/>
+                    <span class="slider round"></span>
+                </label>
+            </div>
             <button id="passButton" onClick={passButtonClicked}>Change Password</button>
             <form
                 id="passForm"

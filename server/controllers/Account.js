@@ -7,7 +7,7 @@ const accountPage = (req, res) => res.render('account');
 
 const getAccount = async (req, res) => {
   try {
-    const docs = await Account.findById(req.session.account._id).select('username email').lean().exec();
+    const docs = await Account.findById(req.session.account._id).select('username email premium').lean().exec();
 
     return res.json({ user: docs });
   } catch (err) {
@@ -101,6 +101,36 @@ const changePassword = async (req, res) => {
   }
 };
 
+const setPremium = async (req, res) => {
+  const { username } = req.session.account;
+
+  if (req.session.account.premium === false) {
+    try {
+      await Account.updateOne(
+        { username }, // Filter
+        { $set: { premium: true } }, // Update
+      );
+      req.session.account.premium = true;
+      return res.status(200).json({ message: 'Premium Account Activated' });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'An error occured!' });
+    }
+  }
+
+  try {
+    await Account.updateOne(
+      { username }, // Filter
+      { $set: { premium: false } }, // Update
+    );
+    req.session.account.premium = false;
+    return res.status(200).json({ message: 'Premium Account Deactivated' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'An error occured!' });
+  }
+};
+
 module.exports = {
   getAccount,
   loginPage,
@@ -109,4 +139,5 @@ module.exports = {
   logout,
   signup,
   changePassword,
+  setPremium,
 };
