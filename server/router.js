@@ -29,6 +29,10 @@ const router = (app) => {
   app.post('/maker', mid.requiresLogin, upload.single('image'), controllers.Project.makeProject);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+
+  // Redirects all other requests to the login page, including non-exstent page requests
+  // The middleware may cause a redirect to the maker page instead if a user is already logged in
+  app.get('/*', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 
 module.exports = router;
