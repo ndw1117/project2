@@ -21,7 +21,7 @@ const handleProject = async (e, onProjectAdded) => {
     const imageType = document.getElementById('projectImage').files[0].type;
 
     // Checks to make sure that the file submitted is an image
-    if (!imageType.startsWith('image/')) {
+    if (!imageType.startsWith('image/') || imageType.startsWith('image/gif')) {
         helper.handleError('Unsupported image file type');
         return false;
     }
