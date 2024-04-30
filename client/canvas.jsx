@@ -424,7 +424,7 @@ class Effect {
             link.style.visibility = 'visible';
         }
         else {
-            focusParticle.querySelector("a").visibility = 'hidden';
+            focusParticle.querySelector("a").style.visibility = 'hidden';
         }
 
         focusParticle.querySelector("#creator").innerHTML = `<b>Creator: <b>${project.ownerName}`;
@@ -435,7 +435,7 @@ class Effect {
             contact.style.visibility = 'visible';
         }
         else {
-            focusParticle.querySelector("#contact").visibility = 'hidden';
+            focusParticle.querySelector("#contact").style.visibility = 'hidden';
         }
     }
 }
