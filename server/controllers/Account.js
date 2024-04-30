@@ -2,9 +2,13 @@ const models = require('../models');
 
 const { Account } = models;
 
+// Handles a request to render the login page
 const loginPage = (req, res) => res.render('login');
+
+// Handles a request to render the account page
 const accountPage = (req, res) => res.render('account');
 
+// Returns information for the current user's account
 const getAccount = async (req, res) => {
   try {
     const docs = await Account.findById(req.session.account._id).select('username email premium').lean().exec();
@@ -16,12 +20,14 @@ const getAccount = async (req, res) => {
   }
 };
 
+// Logs out the current user and redirects to the root page
 const logout = (req, res) => {
   // Destory removes a user's session so we know they are no longer logged in
   req.session.destroy();
   res.redirect('/');
 };
 
+// Logs in a user after validating the given username and password
 const login = (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -35,12 +41,15 @@ const login = (req, res) => {
       return res.status(401).json({ error: 'Wrong username or password!' });
     }
 
+    // Starts a new session
     req.session.account = Account.toAPI(account);
 
+    // Redirects to the maker page
     return res.json({ redirect: '/maker' });
   });
 };
 
+// Creates a new user using given information
 const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const email = `${req.body.email}`;
@@ -56,6 +65,7 @@ const signup = async (req, res) => {
   }
 
   try {
+    // Creates a secure hash of the password to store
     const hash = await Account.generateHash(pass);
     let newAccount;
     if (email !== undefined) {
@@ -63,6 +73,7 @@ const signup = async (req, res) => {
     } else {
       newAccount = new Account({ username, password: hash });
     }
+    // Creates the new account and then redirects to the maker page
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
     return res.json({ redirect: '/maker' });
@@ -75,6 +86,7 @@ const signup = async (req, res) => {
   }
 };
 
+// Changes the password for the current user after validating the input
 const changePassword = async (req, res) => {
   const { username } = req.session.account;
   const newPass = `${req.body.pass}`;
@@ -89,7 +101,10 @@ const changePassword = async (req, res) => {
   }
 
   try {
+    // Creates a secure hash of the password to store
     const hash = await Account.generateHash(newPass);
+
+    // Updates the password
     await Account.updateOne(
       { username }, // Filter
       { $set: { password: hash } }, // Update
@@ -101,10 +116,12 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Toggles the premium status of the current account
 const setPremium = async (req, res) => {
   const { username } = req.session.account;
 
   if (req.session.account.premium === false) {
+    // Activates premium
     try {
       await Account.updateOne(
         { username }, // Filter
@@ -118,6 +135,7 @@ const setPremium = async (req, res) => {
     }
   }
 
+  // Deactivates premium
   try {
     await Account.updateOne(
       { username }, // Filter

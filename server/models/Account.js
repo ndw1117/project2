@@ -17,10 +17,7 @@ const saltRounds = 10;
 
 let AccountModel = {};
 
-/* Our schema defines the data we will store. A username (string of alphanumeric
-   characters), a password (actually the hashed version of the password created
-   by bcrypt), and the created date.
-*/
+/* Our schema defines the data we will store. */
 const AccountSchema = new mongoose.Schema({
   username: {
     type: String,

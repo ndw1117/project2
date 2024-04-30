@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const { createRoot } = require('react-dom/client');
 
+// Sends a POST request to log in a user after checking for username & password
 const handleLogin = (e) => {
     e.preventDefault();
     helper.hideError();
@@ -18,6 +19,7 @@ const handleLogin = (e) => {
     return false;
 };
 
+// Sends a POST request to sign up a new user using the information in the sign-up form
 const handleSignup = (e) => {
     e.preventDefault();
     helper.hideError();
@@ -64,7 +66,7 @@ const LoginWindow = (props) => {
     );
 };
 
-// The component for the signup window
+// The React component for the signup window
 const SignupWindow = (props) => {
     return (
         <form id="signupForm"
@@ -87,6 +89,7 @@ const SignupWindow = (props) => {
     );
 };
 
+// Renders the components and initializes the login window
 const init = () => {
     const switchLabel = document.getElementById('switchLabel');
     const switchButton = document.getElementById('switchButton');
@@ -94,6 +97,7 @@ const init = () => {
     // Creates a React Root out of the content section
     const root = createRoot(document.getElementById('content'));
 
+    // Toggles between the log in and sign up displays
     switchButton.addEventListener('click', (e) => {
         e.preventDefault();
         if (switchButton.dataset.mode === 'signup') {

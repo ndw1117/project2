@@ -1,8 +1,12 @@
+// This file defines our schema and model interface for the project data.
+
 const mongoose = require('mongoose');
 const _ = require('underscore');
 
+// Trims the title
 const setTitle = (title) => _.escape(title).trim();
 
+/* Our schema defines the data we will store. */
 const ProjectSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -51,6 +55,7 @@ const ProjectSchema = new mongoose.Schema({
   },
 });
 
+// Converts a doc to something we can store elsewhere later on.
 ProjectSchema.statics.toAPI = (doc) => ({
   title: doc.title,
   ownerName: doc.ownerName,

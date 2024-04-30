@@ -77,6 +77,7 @@ const sendPost = async (url, data, handler) => {
   return result;
 };
 
+// Hides the error message element
 const hideError = () => {
   document.getElementById('errorMessage').classList.add('hidden');
 };

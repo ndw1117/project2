@@ -1,3 +1,5 @@
+// This file sets up and initializes the app
+
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
@@ -15,6 +17,7 @@ const router = require('./router.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
+// Connects to MongoDB
 const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/DomoMaker';
 mongoose.connect(dbURI).catch((err) => {
   if (err) {
@@ -23,6 +26,7 @@ mongoose.connect(dbURI).catch((err) => {
   }
 });
 
+// Connects to Redis
 const redisClient = redis.createClient({
   url: process.env.REDISCLOUD_URL,
 });
@@ -44,7 +48,7 @@ redisClient.connect().then(() => {
     store: new RedisStore({
       client: redisClient,
     }),
-    secret: 'Domo Arigato',
+    secret: 'Mindscape',
     resave: false,
     saveUninitialized: false,
   }));

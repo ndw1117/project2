@@ -3,6 +3,7 @@ const models = require('../models');
 
 const { Project } = models;
 
+// Returns all projects belonging to the current user
 const getProjects = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
@@ -15,6 +16,7 @@ const getProjects = async (req, res) => {
   }
 };
 
+// Returns a random selection of other users' projects
 const getRandomProjects = async (req, res) => {
   try {
     // Convert the string ID to an ObjectID. Needed for propery query comparison
@@ -23,8 +25,10 @@ const getRandomProjects = async (req, res) => {
     // $ne is the MongoDB operator for "not equal"
     const query = { owner: { $ne: accountId } };
 
+    // Parses the query parameter for the number of projects requested
     const num = parseInt(req.query.num, 10);
 
+    // If there is a number of projects requested, conduct the search using that number
     if (num) {
       const docs = await Project.aggregate([
         { $match: query },
@@ -73,8 +77,10 @@ const getRandomProjects = async (req, res) => {
   }
 };
 
+// Handles a request to render the maker page
 const makerPage = async (req, res) => res.render('app');
 
+// Creates a new project using the given information
 const makeProject = async (req, res) => {
   let imageBuffer;
 
@@ -100,6 +106,7 @@ const makeProject = async (req, res) => {
   };
 
   try {
+    // Creates and saves the new project
     const newProject = new Project(projectData);
     await newProject.save();
     return res.status(201).json({ title: newProject.title, ownerName: newProject.ownerName });

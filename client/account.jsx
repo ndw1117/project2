@@ -3,6 +3,7 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
+// Sends a POST request to update the current user's password
 const handlePassChange = async (e) => {
     e.preventDefault();
     helper.hideError();
@@ -34,6 +35,7 @@ const AccountWindow = (props) => {
     const [user, setUser] = useState(props.user);
 
     useEffect(() => {
+        // Gets the information for the current account
         const loadAccountInfo = async () => {
             const response = await fetch('/getAccount');
             const data = await response.json();
@@ -42,11 +44,13 @@ const AccountWindow = (props) => {
         loadAccountInfo();
     }, [props.reloadUser]);
 
+    // Shows the password change form and hides the "Change Password" button
     const passButtonClicked = () => {
         document.getElementById('passForm').classList.remove('hidden');
         document.getElementById('passButton').classList.add('hidden');
     };
 
+    // Sends a POST request to toggle the premium status of the current account
     const togglePremium = async () => {
         helper.hideError();
     
@@ -56,6 +60,7 @@ const AccountWindow = (props) => {
     
         user.premium = !user.premium;
 
+        // Adjusts the toggle switch to reflect the change
         let toggleSwitch = document.getElementById('toggleSwitch');
         toggleSwitch.checked = user.premium;
     }
@@ -92,6 +97,7 @@ const AccountWindow = (props) => {
     );
 };
 
+// The overall App component
 const App = () => {
     const [reloadUser, setReloadUser] = useState(false);
 
@@ -102,6 +108,7 @@ const App = () => {
     );
 };
 
+// Creates the root and renders the App component
 const init = () => {
     const root = createRoot(document.getElementById('content'));
     root.render(<App />);

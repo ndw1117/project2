@@ -20,6 +20,7 @@ const handleProject = async (e, onProjectAdded) => {
 
     const imageType = document.getElementById('projectImage').files[0].type;
 
+    // Checks to make sure that the file submitted is an image
     if (!imageType.startsWith('image/')) {
         helper.handleError('Unsupported image file type');
         return false;
@@ -28,6 +29,7 @@ const handleProject = async (e, onProjectAdded) => {
     const projectData = new FormData(e.target);
     projectData.append('imageType', imageType);
 
+    // Sends the form data to the server and then calls the provided function
     helper.sendFormData(e.target.action, projectData, onProjectAdded);
 
     // Reset the form inputs upon success
@@ -36,6 +38,7 @@ const handleProject = async (e, onProjectAdded) => {
     return false;
 };
 
+// The React component for the project form
 const ProjectForm = (props) => {
     return (
         <form id="projectForm"
@@ -44,7 +47,6 @@ const ProjectForm = (props) => {
             action="/maker"
             method="POST"
             className="projectForm"
-        // encType="multipart/form-data"
         >
             <label htmlFor="title">Title: </label>
             <input id="projectTitle" type="text" name="title" placeholder="Project Title" />
@@ -59,10 +61,12 @@ const ProjectForm = (props) => {
     );
 };
 
+// The React component for the list of a user's projects
 const ProjectList = (props) => {
     const [projects, setProjects] = useState(props.projects);
 
     useEffect(() => {
+        // Loads the current user's projects from the server
         const loadProjectsFromServer = async () => {
             const response = await fetch('/getProjects');
             const data = await response.json();
@@ -79,6 +83,7 @@ const ProjectList = (props) => {
         );
     }
 
+    // Creates a div with project info for each project
     const projectNodes = projects.map(project => {
         return (
             <div key={project.id} className="project">
@@ -89,6 +94,7 @@ const ProjectList = (props) => {
         );
     });
 
+    // Returns the list of projects
     return (
         <div className="projectList">
             {projectNodes}
@@ -96,6 +102,7 @@ const ProjectList = (props) => {
     );
 };
 
+// The overall App component
 const App = () => {
     const [reloadProjects, setReloadProjects] = useState(false);
 
@@ -111,6 +118,7 @@ const App = () => {
     );
 };
 
+// Creates the root and renders the App component
 const init = () => {
     const root = createRoot(document.getElementById('app'));
     root.render(<App />);

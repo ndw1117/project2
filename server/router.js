@@ -1,3 +1,6 @@
+// This file is responsible for routing requests to the server to the proper controller functions
+
+// Multer is used for sending complex multipart form data with images and text
 const multer = require('multer');
 const controllers = require('./controllers');
 const mid = require('./middleware');
@@ -21,9 +24,8 @@ const router = (app) => {
 
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
-  // Change to Project.makerPage and confirm it works
-  app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
-  // app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
+  app.get('/maker', mid.requiresLogin, controllers.Project.makerPage);
+  // single() processes the image file from the multipart form data
   app.post('/maker', mid.requiresLogin, upload.single('image'), controllers.Project.makeProject);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
